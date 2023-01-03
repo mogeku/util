@@ -13,6 +13,7 @@
 #include <string>
 #include <vector>
 #include <cctype>
+#include <iomanip>
 #include <algorithm>
 #include <stdarg.h>
 
@@ -101,8 +102,22 @@ inline std::string Sprintf(const char* fmt, ...) {
     char buf[512];
     va_list va;
     va_start(va, fmt);
+#ifdef _WIN
     int len = vsprintf_s(buf, 512, fmt, va);
+#else
+    int len = vsprintf(buf, fmt, va);
+#endif
     return std::string(buf, len);
+}
+
+inline std::string GetHashHexStr(std::string str, int width=8) {
+    // 获取字符串的哈希值
+    std::size_t hash_val = std::hash<std::string>()(str);
+
+    std::stringstream ss;
+    // 转换为16进制字符串
+    ss << std::hex << std::setprecision(width) << std::setw(width) << std::setfill('0') << hash_val;
+    return ss.str();
 }
 
 }   // namespace str

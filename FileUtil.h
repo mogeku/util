@@ -72,7 +72,7 @@ inline bool CheckIsFile(const std::string &file_path) {
     return fs::is_regular_file(fs::u8path(file_path));
 }
 
-inline std::fstream OpenFileUtf8(const std::string &file_path, int mode = std::ios::in | std::ios::out) {
+inline std::fstream OpenFileUtf8(const std::string &file_path, std::ios_base::openmode mode = std::ios::in | std::ios::out) {
     return std::fstream(fs::u8path(file_path), mode);
 }
 
@@ -94,7 +94,8 @@ inline uintmax_t Remove(const std::string &path, std::error_code &err_code) {
         return fs::remove(p, err_code);
 }
 
-inline bool Mkdir(const std::string &dir_path) {
+inline bool Mkdir(const std::string &dir_path, bool is_remove=false) {
+    if (is_remove) Remove(dir_path);
     return fs::create_directories(fs::u8path(dir_path));
 }
 
@@ -123,7 +124,7 @@ inline std::string GetParentPath(const std::string &file_path, char path_sep) {
 }
 
 inline std::string Join(fs::path p1, fs::path p2) {
-    return p1.append(p2).string();
+    return p1.append(p2).u8string();
 }
 
 
